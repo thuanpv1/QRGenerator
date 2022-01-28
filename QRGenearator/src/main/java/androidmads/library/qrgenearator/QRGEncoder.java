@@ -223,6 +223,36 @@ public class QRGEncoder {
         }
     }
 
+    public Bitmap getBitmap(int widthP, int heightP) {
+        if (!encoded) return null;
+        try {
+            Map<EncodeHintType, Object> hints = null;
+            String encoding = guessAppropriateEncoding(contents);
+            if (encoding != null) {
+                hints = new EnumMap<>(EncodeHintType.class);
+                hints.put(EncodeHintType.CHARACTER_SET, encoding);
+            }
+            MultiFormatWriter writer = new MultiFormatWriter();
+            BitMatrix result = writer.encode(contents, format, widthP, heightP, hints);
+            int width = result.getWidth();
+            int height = result.getHeight();
+            int[] pixels = new int[width * height];
+            // All are 0, or black, by default
+            for (int y = 0; y < height; y++) {
+                int offset = y * width;
+                for (int x = 0; x < width; x++) {
+                    pixels[offset + x] = result.get(x, y) ? getColorBlack() : getColorWhite();
+                }
+            }
+
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+            return bitmap;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
     private String guessAppropriateEncoding(CharSequence contents) {
         // Very crude at the moment
         for (int i = 0; i < contents.length(); i++) {

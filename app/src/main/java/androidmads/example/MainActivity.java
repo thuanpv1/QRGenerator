@@ -53,16 +53,15 @@ public class MainActivity extends AppCompatActivity {
                     int width = point.x;
                     int height = point.y;
                     int smallerDimension = width < height ? width : height;
-                    smallerDimension = smallerDimension * 3 / 4;
 
                     qrgEncoder = new QRGEncoder(
                             inputValue, null,
                             QRGContents.Type.TEXT,
                             smallerDimension);
-                    qrgEncoder.setColorBlack(Color.RED);
-                    qrgEncoder.setColorWhite(Color.BLUE);
+//                    qrgEncoder.setColorBlack(Color.RED);
+//                    qrgEncoder.setColorWhite(Color.BLUE);
                     try {
-                        bitmap = qrgEncoder.getBitmap();
+                        bitmap = qrgEncoder.getBitmap(smallerDimension, 100);
                         qrImage.setImageBitmap(bitmap);
                     } catch (Exception e) {
                         e.printStackTrace();
